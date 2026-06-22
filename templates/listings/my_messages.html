@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <div class="section-title">Messages</div>
+  <div class="section-divider"></div>
+  <ul class="nav nav-tabs mb-4" id="msgTab">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#received">
+      <i class="bi bi-inbox"></i> Received ({{ received.count }})</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#sent">
+      <i class="bi bi-send"></i> Sent ({{ sent.count }})</button></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="received">
+      {% for msg in received %}
+      <div class="msg-card {% if not msg.is_read %}unread{% endif %}">
+        <div class="d-flex justify-content-between">
+          <strong>{{ msg.sender.get_full_name|default:msg.sender.username }}</strong>
+          <small class="text-muted">{{ msg.created_at|timesince }} ago</small>
+        </div>
+        <p class="text-muted small mb-1">Re: <a href="{% url 'listing_detail' msg.listing.pk %}">{{ msg.listing.title }}</a></p>
+        <p class="mb-0">{{ msg.message }}</p>
+      </div>
+      {% empty %}<p class="text-muted">No messages received yet.</p>{% endfor %}
+    </div>
+    <div class="tab-pane fade" id="sent">
+      {% for msg in sent %}
+      <div class="msg-card">
+        <div class="d-flex justify-content-between">
+          <strong>To: {{ msg.listing.owner.get_full_name|default:msg.listing.owner.username }}</strong>
+          <small class="text-muted">{{ msg.created_at|timesince }} ago</small>
+        </div>
+        <p class="text-muted small mb-1">Re: <a href="{% url 'listing_detail' msg.listing.pk %}">{{ msg.listing.title }}</a></p>
+        <p class="mb-0">{{ msg.message }}</p>
+      </div>
+      {% empty %}<p class="text-muted">You have not sent any messages yet.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

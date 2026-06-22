@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="form-card">
+    <h2><i class="bi bi-person-plus"></i> Create Account</h2>
+    <p class="text-muted mb-4">Join RoomSathi for free. Only for TU students.</p>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }} {% if field.field.required %}<span class="text-danger">*</span>{% endif %}</label>
+        {{ field }}
+        {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary w-100 py-2 mt-2"><i class="bi bi-check-circle"></i> Register</button>
+    </form>
+    <p class="text-center text-muted mt-3 mb-0">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+  </div>
+</div>
+<script>
+document.querySelectorAll('input:not([type=checkbox])').forEach(el=>el.classList.add('form-control'));
+document.querySelectorAll('select').forEach(el=>el.classList.add('form-select'));
+</script>
+{% endblock %}

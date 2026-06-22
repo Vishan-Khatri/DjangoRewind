@@ -1,0 +1,14 @@
+{
+  "python.defaultInterpreterPath": "python",
+  "python.terminal.activateEnvironment": true,
+  "files.associations": {
+    "*.html": "html"
+  },
+  "emmet.includeLanguages": {
+    "django-html": "html"
+  },
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+  "python.analysis.extraPaths": ["."]
+}

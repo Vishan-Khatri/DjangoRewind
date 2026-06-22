@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<div class="hero">
+  <div class="container">
+    <h1><i class="bi bi-house-heart"></i> Find Your Sathi</h1>
+    <p>A safe, student-only platform to find flats and roommates near your college.</p>
+    <a href="{% url 'listing_list' %}" class="btn btn-light btn-lg me-2 fw-bold text-primary">
+      <i class="bi bi-search"></i> Browse Listings
+    </a>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn btn-warning btn-lg fw-bold">
+      <i class="bi bi-person-plus"></i> Join Free
+    </a>
+    {% else %}
+    <a href="{% url 'listing_create' %}" class="btn btn-warning btn-lg fw-bold">
+      <i class="bi bi-plus-circle"></i> Post a Listing
+    </a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- How It Works -->
+<div class="container my-5">
+  <div class="text-center mb-4">
+    <div class="section-title">How RoomSathi Works</div>
+    <div class="section-divider mx-auto"></div>
+  </div>
+  <div class="row g-4 text-center">
+    <div class="col-md-3">
+      <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+        <div style="font-size:2.5rem; color:var(--primary)"><i class="bi bi-person-plus"></i></div>
+        <h6 class="fw-bold mt-2">1. Register</h6>
+        <p class="text-muted small">Create a free account with your college email.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+        <div style="font-size:2.5rem; color:var(--primary)"><i class="bi bi-house-add"></i></div>
+        <h6 class="fw-bold mt-2">2. Post or Browse</h6>
+        <p class="text-muted small">Post your room or browse available listings.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+        <div style="font-size:2.5rem; color:var(--primary)"><i class="bi bi-funnel"></i></div>
+        <h6 class="fw-bold mt-2">3. Filter</h6>
+        <p class="text-muted small">Filter by city, rent, gender preference, and more.</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+        <div style="font-size:2.5rem; color:var(--primary)"><i class="bi bi-chat-dots"></i></div>
+        <h6 class="fw-bold mt-2">4. Contact</h6>
+        <p class="text-muted small">Send a message directly through the platform.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Latest Listings -->
+<div class="container mb-5">
+  <div class="section-title">Latest Listings</div>
+  <div class="section-divider"></div>
+  {% if listings %}
+  <div class="row g-4">
+    {% for listing in listings %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="listing-card">
+        {% if listing.photo %}
+          <img src="{{ listing.photo.url }}" alt="{{ listing.title }}">
+        {% else %}
+          <div class="no-photo"><i class="bi bi-house"></i></div>
+        {% endif %}
+        <div class="card-body">
+          <span class="badge-city">{{ listing.city }}</span>
+          <h6 class="fw-bold mt-2 mb-1">{{ listing.title }}</h6>
+          <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> {{ listing.address|truncatechars:50 }}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="price">NPR {{ listing.rent|floatformat:0 }}/mo</span>
+            <span class="badge bg-light text-dark">{{ listing.get_room_type_display }}</span>
+          </div>
+          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-primary btn-sm w-100 mt-3">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="text-center mt-4">
+    <a href="{% url 'listing_list' %}" class="btn btn-outline-primary btn-lg">See All Listings <i class="bi bi-arrow-right"></i></a>
+  </div>
+  {% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-house-x" style="font-size:3rem"></i>
+    <p class="mt-2">No listings yet. <a href="{% url 'listing_create' %}">Be the first to post one!</a></p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

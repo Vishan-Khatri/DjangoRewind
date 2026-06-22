@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Browse Listings{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <div class="section-title">Browse Listings</div>
+  <div class="section-divider"></div>
+
+  <!-- Search Form -->
+  <div class="search-box">
+    <form method="get">
+      <div class="row g-3">
+        <div class="col-sm-6 col-md-3">
+          <label class="form-label">City</label>
+          {{ form.city }}
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <label class="form-label">Room Type</label>
+          {{ form.room_type }}
+        </div>
+        <div class="col-sm-6 col-md-2">
+          <label class="form-label">Gender Pref.</label>
+          {{ form.gender }}
+        </div>
+        <div class="col-sm-3 col-md-2">
+          <label class="form-label">Min Rent</label>
+          {{ form.rent_min }}
+        </div>
+        <div class="col-sm-3 col-md-2">
+          <label class="form-label">Max Rent</label>
+          {{ form.rent_max }}
+        </div>
+        <div class="col-12">
+          <div class="form-check form-check-inline">
+            {{ form.furnished }} <label class="form-check-label ms-1">Furnished</label>
+          </div>
+          <div class="form-check form-check-inline">
+            {{ form.wifi }} <label class="form-check-label ms-1">WiFi</label>
+          </div>
+          <button type="submit" class="btn btn-primary ms-3"><i class="bi bi-search"></i> Search</button>
+          <a href="{% url 'listing_list' %}" class="btn btn-outline-secondary ms-2">Clear</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Results -->
+  <p class="text-muted mb-3"><strong>{{ listings.count }}</strong> listing{{ listings.count|pluralize }} found</p>
+
+  {% if listings %}
+  <div class="row g-4">
+    {% for listing in listings %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="listing-card">
+        {% if listing.photo %}
+          <img src="{{ listing.photo.url }}" alt="{{ listing.title }}">
+        {% else %}
+          <div class="no-photo"><i class="bi bi-house"></i></div>
+        {% endif %}
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <span class="badge-city">{{ listing.city }}</span>
+            <span class="badge bg-secondary">{{ listing.get_gender_pref_display }}</span>
+          </div>
+          <h6 class="fw-bold mt-2 mb-1">{{ listing.title }}</h6>
+          <p class="text-muted small mb-2"><i class="bi bi-geo-alt"></i> {{ listing.address|truncatechars:55 }}</p>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="price">NPR {{ listing.rent|floatformat:0 }}/mo</span>
+            <span class="badge bg-light text-dark">{{ listing.get_room_type_display }}</span>
+          </div>
+          <div class="mb-3">
+            {% if listing.furnished %}<span class="amenity-badge"><i class="bi bi-sofa"></i> Furnished</span>{% endif %}
+            {% if listing.wifi %}<span class="amenity-badge"><i class="bi bi-wifi"></i> WiFi</span>{% endif %}
+            {% if listing.water_included %}<span class="amenity-badge"><i class="bi bi-droplet"></i> Water</span>{% endif %}
+          </div>
+          <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-primary btn-sm w-100">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-search" style="font-size:3rem"></i>
+    <p class="mt-2">No listings match your search. Try changing the filters.</p>
+    <a href="{% url 'listing_list' %}" class="btn btn-outline-primary">Clear Filters</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Add Bootstrap select classes to form selects and inputs
+document.querySelectorAll('select').forEach(el => el.classList.add('form-select'));
+document.querySelectorAll('input[type=number]').forEach(el => el.classList.add('form-control'));
+document.querySelectorAll('input[type=checkbox]').forEach(el => el.classList.add('form-check-input'));
+</script>
+{% endblock %}

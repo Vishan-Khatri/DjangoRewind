@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}My Listings{% endblock %}
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <div class="section-title">My Listings</div>
+      <div class="section-divider"></div>
+    </div>
+    <a href="{% url 'listing_create' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Post New</a>
+  </div>
+  {% if listings %}
+  <div class="row g-4">
+    {% for listing in listings %}
+    <div class="col-sm-6 col-lg-4">
+      <div class="listing-card">
+        {% if listing.photo %}<img src="{{ listing.photo.url }}" alt="">
+        {% else %}<div class="no-photo"><i class="bi bi-house"></i></div>{% endif %}
+        <div class="card-body">
+          <h6 class="fw-bold">{{ listing.title }}</h6>
+          <p class="text-muted small"><i class="bi bi-geo-alt"></i> {{ listing.city }}</p>
+          <p class="price">NPR {{ listing.rent|floatformat:0 }}/mo</p>
+          <p class="text-muted small"><i class="bi bi-chat"></i> {{ listing.messages.count }} message{{ listing.messages.count|pluralize }}</p>
+          <div class="d-flex gap-2">
+            <a href="{% url 'listing_detail' listing.pk %}" class="btn btn-outline-primary btn-sm flex-grow-1">View</a>
+            <a href="{% url 'listing_edit' listing.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'listing_delete' listing.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="bi bi-house-x" style="font-size:3rem"></i>
+    <p class="mt-2">You have no active listings.</p>
+    <a href="{% url 'listing_create' %}" class="btn btn-primary">Post Your First Listing</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
